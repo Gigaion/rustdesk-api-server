@@ -18,22 +18,22 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="rustdesdevice",
             name="hostname",
-            field=models.CharField(max_length=100, verbose_name="主机名"),
+            field=models.CharField(max_length=100, verbose_name="CPU Name"),
         ),
         migrations.AlterField(
             model_name="rustdesdevice",
             name="memory",
-            field=models.CharField(max_length=100, verbose_name="内存"),
+            field=models.CharField(max_length=100, verbose_name="Memory"),
         ),
         migrations.AlterField(
             model_name="rustdesdevice",
             name="os",
-            field=models.CharField(max_length=100, verbose_name="操作系统"),
+            field=models.CharField(max_length=100, verbose_name="Operating System"),
         ),
         migrations.AlterField(
             model_name="rustdesdevice",
             name="username",
-            field=models.CharField(blank=True, max_length=100, verbose_name="系统用户名"),
+            field=models.CharField(blank=True, max_length=100, verbose_name="System Username"),
         ),
         migrations.AlterField(
             model_name="rustdesdevice",
@@ -43,6 +43,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="rustdesdevice",
             name="version",
-            field=models.CharField(max_length=100, verbose_name="客户端版本"),
+            field=models.CharField(max_length=100, verbose_name="Client Version"),
         ),
     ]
