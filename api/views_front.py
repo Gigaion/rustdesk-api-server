@@ -32,68 +32,68 @@ def getStrMd5(s):
 
 def model_to_dict2(instance, fields=None, exclude=None, replace=None, default=None):
     """
-    :params instance: 模型对象，不能是queryset数据集
-    :params fields: 指定要展示的字段数据，('字段1','字段2')
-    :params exclude: 指定排除掉的字段数据,('字段1','字段2')
-    :params replace: 将字段名字修改成需要的名字，{'数据库字段名':'前端展示名'}
-    :params default: 新增不存在的字段数据，{'字段':'数据'}
+    :params instance: Model instance, cannot be a queryset
+    :params fields: Specifies the fields to display, ('field1','field2')
+    :params exclude: Specifies the fields to exclude, ('field1','field2')
+    :params replace: Rename the database field names to the required names, {'database_field_name':'frontend_display_name'}
+    :params default: Add new field data that doesn't exist, {'field':'data'}
     """
-    # 对传递进来的模型对象校验
+    # Validation for the model instance passed
     if not isinstance(instance, Model):
-        raise Exception('model_to_dict接收的参数必须是模型对象')
-    # 对替换数据库字段名字校验
+        raise Exception('model_to_dict expects a model instance')
+    # Validation for replacing database field names
     if replace and type(replace) == dict:
         for replace_field in replace.values():
             if hasattr(instance, replace_field):
-                raise Exception(f'model_to_dict,要替换成{replace_field}字段已经存在了')
-    # 对要新增的默认值进行校验
+                raise Exception(f'model_to_dict, the field {replace_field} to be replaced already exists')
+    # Validation for adding default values
     if default and type(default) == dict:
         for default_key in default.keys():
             if hasattr(instance, default_key):
-                raise Exception(f'model_to_dict,要新增默认值，但字段{default_key}已经存在了')
+                raise Exception(f'model_to_dict, adding a default value for field {default_key} but it already exists')
     opts = instance._meta
     data = {}
     for f in chain(opts.concrete_fields, opts.private_fields, opts.many_to_many):
-        # 源码下：这块代码会将时间字段剔除掉，我加上一层判断，让其不再剔除时间字段
+        # Original code: this part of code would exclude date fields, added a condition to include them
         if not getattr(f, 'editable', False):
             if type(f) == DateField or type(f) == DateTimeField:
                 pass
             else:
                 continue
-        # 如果fields参数传递了，要进行判断
+        # If fields parameter is passed, it needs to be checked
         if fields is not None and f.name not in fields:
             continue
-        # 如果exclude 传递了，要进行判断
+        # If exclude is passed, it needs to be checked
         if exclude and f.name in exclude:
             continue
 
         key = f.name
-        # 获取字段对应的数据
+        # Getting the data for the field
         if type(f) == DateTimeField:
-            # 字段类型是，DateTimeFiled 使用自己的方式操作
+            # If the field type is DateTimeField, handle it in a specific way
             value = getattr(instance, key)
             value = datetime.datetime.strftime(value, '%Y-%m-%d')
         elif type(f) == DateField:
-            # 字段类型是，DateFiled 使用自己的方式操作
+            # If the field type is DateField, handle it in a specific way
             value = getattr(instance, key)
             value = datetime.datetime.strftime(value, '%Y-%m-%d')
         elif type(f) == CharField or type(f) == TextField:
-            # 字符串数据是否可以进行序列化，转成python结构数据
+            # Check if string data can be serialized into Python structures
             value = getattr(instance, key)
             try:
                 value = json.loads(value)
             except Exception as _:
                 value = value
-        else:#其他类型的字段
+        else: # For other types of fields
             # value = getattr(instance, key)
             key = f.name
             value = f.value_from_object(instance)
             # data[f.name] = f.value_from_object(instance)
-        # 1、替换字段名字
+        # 1. Replace field names
         if replace and key in replace.keys():
             key = replace.get(key)
         data[key] = value
-    #2、新增默认的字段数据
+    # 2. Add new default field data
     if default:
         data.update(default)
     return data
@@ -125,14 +125,14 @@ def user_login(request):
     username = request.POST.get('account', '')
     password = request.POST.get('password', '')
     if not username or not password:
-        return JsonResponse({'code':0, 'msg':'出了点问题。'})
+        return JsonResponse({'code':0, 'msg':'There was a problem.'})
 
     user = auth.authenticate(username=username,password=password)
     if user:
         auth.login(request, user)
         return JsonResponse({'code':1, 'url':'/api/work'})
     else:
-        return JsonResponse({'code':0, 'msg':'帐号或密码错误！'})
+        return JsonResponse({'code':0, 'msg':'Account or password incorrect!'})
 
 def user_register(request):
     info = ''
@@ -147,18 +147,18 @@ def user_register(request):
     password1 = request.POST.get('pwd', '')
 
     if len(username) <= 3:
-        info = '用户名不得小于3位'
+        info = 'Username must be longer than 3 characters'
         result['msg'] = info
         return JsonResponse(result)
 
     if len(password1)<8 or len(password1)>20:
-        info = '密码长度不符合要求, 应在8~20位。'
+        info = 'Password length does not meet requirements, should be 8~20 characters.'
         result['msg'] = info
         return JsonResponse(result)
 
     user = UserProfile.objects.filter(Q(username=username)).first()
     if user:
-        info = '用户名已存在。'
+        info = 'Username already exists.'
         result['msg'] = info
         return JsonResponse(result)
     user = UserProfile(
@@ -196,7 +196,7 @@ def get_single_info(uid):
         peers[rid]['os'] = device.os
 
     for rid in peers.keys():
-        peers[rid]['has_rhash'] = '是' if len(peers[rid]['rhash'])>1 else '否'
+        peers[rid]['has_rhash'] = 'Yes' if len(peers[rid]['rhash'])>1 else 'No'
 
     return [v for k,v in peers.items()]
 
@@ -238,11 +238,12 @@ def check_sharelink_expired(sharelink):
 
 @login_required(login_url='/api/user_action?action=login')
 def share(request):
+    # Share view for handling peer sharing and share link management
     peers = RustDeskPeer.objects.filter(Q(uid=request.user.id))
     sharelinks = ShareLink.objects.filter(Q(uid=request.user.id) & Q(is_used=False) & Q(is_expired=False))
 
 
-    # 省资源：处理已过期请求，不主动定时任务轮询请求，在任意地方请求时，检查是否过期，过期则保存。
+    # Optimize resources: Handle expired requests, check for expiry on any request instead of running a cron job.
     now = datetime.datetime.now()
     for sl in sharelinks:
         check_sharelink_expired(sl)
@@ -258,21 +259,21 @@ def share(request):
             shash = url.split('/')[-1]
             sharelink = ShareLink.objects.filter(Q(shash=shash))
             msg = ''
-            title = '成功'
+            title = 'Success'
             if not sharelink:
-                title = '错误'
-                msg = f'链接{url}:<br>分享链接不存在或已失效。'
+                title = 'Error'
+                msg = f'Link {url}:<br>The share link does not exist or has expired.'
             else:
                 sharelink = sharelink[0]
                 if str(request.user.id) == str(sharelink.uid):
                     title = '错误'
-                    msg = f'链接{url}:<br><br>咱就说，你不能把链接分享给自己吧？！'
+                    msg = f'Link {url}:<br><br>You can not share the link with yourself, can you ! '
                 else:
                     sharelink.is_used = True
                     sharelink.save()
                     peers = sharelink.peers
                     peers = peers.split(',')
-                    # 自己的peers若重叠，需要跳过
+                    # Skip if one's own peers overlap
                     peers_self_ids = [x.rid for x in RustDeskPeer.objects.filter(Q(uid=request.user.id))]
                     peers_share = RustDeskPeer.objects.filter(Q(rid__in=peers) & Q(uid=sharelink.uid))
                     peers_share_ids = [x.rid for x in peers_share]
@@ -283,11 +284,11 @@ def share(request):
                         #peer = RustDeskPeer.objects.get(rid=peer.rid)
                         peer_f = RustDeskPeer.objects.filter(Q(rid=peer.rid) & Q(uid=sharelink.uid))
                         if not peer_f:
-                            msg += f"{peer.rid}已存在,"
+                            msg += f"{peer.rid} already exists,"
                             continue
                         
                         if len(peer_f) > 1:
-                             msg += f'{peer.rid}存在多个,已经跳过。 '
+                             msg += f'{peer.rid} has multiple instances, skipped. '
                              continue
                         peer = peer_f[0]
                         peer.id = None
@@ -295,7 +296,7 @@ def share(request):
                         peer.save()
                         msg += f"{peer.rid},"
 
-                    msg += '已被成功获取。'
+                    msg += 'has been successfully acquired.'
 
             return render(request, 'msg.html', {'title':msg, 'msg':msg})
     else:
@@ -303,7 +304,7 @@ def share(request):
 
         data = json.loads(data)
         if not data:
-            return JsonResponse({'code':0, 'msg':'数据为空。'})
+            return JsonResponse({'code':0, 'msg':'Data is empty.'})
         rustdesk_ids = [x['title'].split('|')[0] for x in data]
         rustdesk_ids = ','.join(rustdesk_ids)
         sharelink = ShareLink(
