@@ -1,11 +1,11 @@
 # rustdesk-api-server
 
-## 如果项目有帮到你，给个star不过分吧？
+## This is is an English translated fork of https://github.com/kingmo888/rustdesk-api-server 
 
-[The English explanation is available by clicking here.](https://github.com/kingmo888/rustdesk-api-server/blob/master/README_EN.md)
+[The more accurate english explanation is available by clicking here.](https://github.com/gigaion/rustdesk-api-server/blob/master/README_EN.md)
 
 <p align="center">
-    <i>一个 python 实现的 Rustdesk API 接口，支持 WebUI 管理</i>
+    <i>A python implementation of the Rustdesk API interface that supports WebUI management</i>
     <br/>
     <img src ="https://img.shields.io/badge/Version-1.4.5-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/Python-3.7|3.8|3.9|3.10|3.11-blue.svg" />
@@ -15,104 +15,104 @@
     <img src ="https://img.shields.io/badge/Docker-arm|arm64|amd64-blue.svg" />
 </p>
 
-![主页面](images/front_main.png)
+![Home Page](images/front_main.png)
 
-## 功能特点
+## Features
 
-- 支持前台网页自主注册和登录。
-  - 注册页与登录页：
+- Support independent registration and login on the front page.
+   - Registration page and login page:
   ![Front Registration](images/front_reg.png)
   ![Front Login](images/front_login.png)
 
-- 支持前台展示设备信息，分为管理员版、用户版。
-- 支持自定义别名（备注）。
-- 支持后台管理。
-- 支持彩色标签。
+- Supports display of device information at the front desk, divided into administrator version and user version.
+- Support custom aliases (remarks).
+- Support background management.
+- Support color labels.
 ![Rust Books](images/rust_books.png)
 
-- 支持设备在线统计。
-- 支持设备密码保存。
-- 利用心跳接口自动管理token并保活。
-- 支持分享设备给其他用户。
+-Support device online statistics.
+-Support device password saving.
+- Use the heartbeat interface to automatically manage tokens and keep them alive.
+- Support sharing devices with other users.
 ![Rust Share](images/share.png)
-- 支持web控制端（目前仅支持非SSL模式，见下面使用问题说明）
+- Supports web control terminal (currently only supports non-SSL mode, see usage instructions below)
 ![Rust Share](images/webui.png)
 
-后台主页：
+Backend homepage:
 ![Admin Main](images/admin_main.png)
 
-## 安装
+## Install
 
-### 方法1：开箱即用
+### Method 1: Use it out of the box
 
-仅支持Windows，请前往 release 下载，无需安装环境，直接运行`启动.bat`即可。 截图：
+Only supports Windows, please go to release to download. No installation environment is required, just run `start.bat` directly. screenshot:
 
-![window直接运行版](/images/windows_run.png)
+![window direct run version](/images/windows_run.png)
 
 
-### 方法2：代码运行
+### Method 2: Code running
 
 ```bash
-# 将代码克隆到本地
-git clone https://github.com/kingmo888/rustdesk-api-server.git
-# 进入目录
+# Clone the code locally
+git clone https://github.com/Gigaion/rustdesk-api-server.git
+# Enter directory
 cd rustdesk-api-server
-# 安装依赖
+# Install dependencies
 pip install -r requirements.txt
-# 确保依赖安装正确后，执行：
-# 端口号请自行修改，建议保留21114为Rustdesk API默认端口
+# After ensuring that the dependencies are installed correctly, execute:
+# Please modify the port number yourself. It is recommended to keep 21114 as the default port of Rustdesk API.
 python manage.py runserver 0.0.0.0:21114
 ```
 
-此时即可使用 `http://本机IP:端口` 的形式来访问。
+At this time, you can use the form of `http://local-IP:port` to access.
 
-**注意**：如果 CentOS 配置时，Django4 会因为系统的 sqlite3 版本过低而出问题，请修改依赖库中的文件。路径：`xxxx/Lib/site-packages/django/db/backends/sqlite3/base.py` （根据情况自行查找包所在地址），修改内容:
+**Note**: If Django4 will have problems when configuring CentOS because the system's sqlite3 version is too low, please modify the files in the dependent library. Path: `xxxx/Lib/site-packages/django/db/backends/sqlite3/base.py` (find the address of the package according to the situation), modify the content:
 ```python
-# from sqlite3 import dbapi2 as Database   #(注释掉这行)
-from pysqlite3 import dbapi2 as Database # 启用pysqlite3
+# from sqlite3 import dbapi2 as Database   #(Comment out this line)
+from pysqlite3 import dbapi2 as Database # Enable pysqlite3
 ```
 
-### 方法3：Docker 运行
+### Method 3: Docker run
 
-#### Docker方法1：自行构建
+#### Docker method 1: Build it yourself
 ```bash
-git clone https://github.com/kingmo888/rustdesk-api-server.git
+git clone https://github.com/Gigaion/rustdesk-api-server.git
 cd rustdesk-api-server
 docker compose --compatibility up --build -d
 ```
-感谢热心网友 @ferocknew 提供。
+Thanks to the enthusiastic netizen @ferocknew for providing it.
 
-#### Docker方法2：预构建运行
+#### Docker Method 2: Pre-build Run
 
-docker run 命令：
+docker run command：
 
 ```bash
 docker run -d \
   --name rustdesk-api-server \
   -p 21114:21114 \
   -e CSRF_TRUSTED_ORIGINS=http://yourdomain.com:21114 \ #防跨域信任来源，可选
-  -e ID_SERVER=yourdomain.com \ #Web控制端使用的ID服务器
-  -v /yourpath/db:/rustdesk-api-server/db \ #修改/yourpath/db为你宿主机数据库挂载目录
+  -e ID_SERVER=yourdomain.com \ #ID server used by the web control
+  -v /yourpath/db:/rustdesk-api-server/db \ #Modify /yourpath/db to be the mounting directory for your host database
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
   --network bridge \
   --restart unless-stopped \
-  ghcr.io/kingmo888/rustdesk-api-server:latest
+  ghcr.io/Gigaion/rustdesk-api-server:latest
 ```
 
-docker-compose 方式：
+docker-compose command:
 
 ```yaml
 version: "3.8"
 services:
   rustdesk-api-server:
     container_name: rustdesk-api-server
-    image: ghcr.io/kingmo888/rustdesk-api-server:latest
+    image: ghcr.io/Gigaion/rustdesk-api-server:latest
     environment:
-      - CSRF_TRUSTED_ORIGINS=http://yourdomain.com:21114 #防跨域信任来源，可选
-      - ID_SERVER=yourdomain.com #Web控制端使用的ID服务器
+      - CSRF_TRUSTED_ORIGINS=http://yourdomain.com:21114 #Prevent cross-domain trust sources, optional
+      - ID_SERVER=yourdomain.com #ID server used by the web control
     volumes:
-      - /yourpath/db:/rustdesk-api-server/db #修改/yourpath/db为你宿主机数据库挂载目录
+      - /yourpath/db:/rustdesk-api-server/db #Modify /yourpath/db to be the mounting directory for your host database
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     network_mode: bridge
@@ -123,70 +123,70 @@ services:
 
 ## 环境变量
 
-| 变量名 | 参考值 | 备注 |
+| Variable name | Reference value | Remarks |
 | ---- | ------- | ----------- |
-| `HOST` | 默认 `0.0.0.0` | 绑定服务的IP |
-| `TZ` | 默认 `Asia/Shanghai`，可选 | 时区 |
-| `SECRET_KEY` | 可选，自定义一串随机字符 | 程序加密秘钥 |
-| `CSRF_TRUSTED_ORIGINS` | 可选，默认关闭验证；<br>如需开启填写你的访问地址 `http://yourdomain.com:21114` <br>**如需关闭验证请删除此变量，而不是留空** | 防跨域信任来源 |
-| `ID_SERVER` | 可选，默认为和API服务器同主机。<br>可自定义如 `yourdomain.com` | Web控制端使用的ID服务器 |
-| `DEBUG` | 可选，默认 `False` | 调试模式 |
+| `HOST` | Default `0.0.0.0` | Binding service IP |
+| `TZ` | Default `America/Los_Angeles`, optional | Time zone |
+| `SECRET_KEY` | Optional, customize a string of random characters | Program encryption key |
+| `CSRF_TRUSTED_ORIGINS` | Optional, verification is turned off by default;<br>If you need to turn it on, fill in your access address `http://yourdomain.com:21114` <br>**If you need to turn off verification, please delete this variable instead Leave blank** | Prevent cross-domain trust sources |
+| `ID_SERVER` | Optional, the default is the same host as the API server. <br>Can be customized such as `yourdomain.com` | ID server used by the web control terminal |
+| `DEBUG` | Optional, default `False` | Debug mode |
 
-## 使用问题
+## Usage issues
 
-- 管理员设置
+- Administrator settings
 
-  当数据库中不存在账户时，第一个注册的账户直接获取超级管理员权限，之后注册账户为普通账户。
+   When there is no account in the database, the first registered account will directly obtain super administrator privileges, and the accounts registered thereafter will be ordinary accounts.
 
-- 设备信息
+- Device Information
 
-  经测试，客户端会在非绿色版模式下，安装为服务的模式中，定时发送设备信息到api接口，所以如果想要设备信息，需要安装rustdesk客户端并启动服务。
+   After testing, the client will regularly send device information to the API interface in non-green version mode when installed as a service. Therefore, if you want device information, you need to install the rustdesk client and start the service.
 
-- 连接速度慢
+- Slow connection speed
 
-  新版本Key模式链接速度慢，可以在服务端启动服务时，不要带参数的-k，此时，客户端也不能配置key。
+   The link speed of the new version of Key mode is slow. When starting the service on the server, do not use the -k parameter. At this time, the client cannot configure the key.
 
-- Web控制端配置
+- Web console configuration
 
-  - 设置ID_SERVER环境变量，或修改rustdesk_server_api/settings.py文件中ID_SERVER配置项，将ID服务器/中继服务器IP或域名填上。
+   - Set the ID_SERVER environment variable, or modify the ID_SERVER configuration item in the rustdesk_server_api/settings.py file and fill in the ID server/relay server IP or domain name.
 
-- Web控制端一直转圈
+- The web console keeps spinning in circles
 
-  - 检查ID服务器填写是否正确
+   - Check whether the ID server is filled in correctly
 
-  - Web控制端目前仅支持非SSL模式，若webui为https访问，请将s去掉，否则ws连不上一直转圈。如：https://domain.com/webui，改为http://domain.com/webui
+   - The Web control terminal currently only supports non-SSL mode. If the webui is accessed via https, please remove the s, otherwise the ws will not be able to connect and will keep spinning. For example: https://domain.com/webui, change to http://domain.com/webui
 
-- 后台操作登录或登出时：CSRF验证失败. 请求被中断.
+- When logging in or out during background operations: CSRF verification failed. The request was interrupted.
 
-  这种操作大概率是docker配置+nginx反代+SSL的组合，要注意修改CSRF_TRUSTED_ORIGINS，如果是ssl那就是https开头，否则就是http。
+   This operation is most likely a combination of docker configuration + nginx reverse generation + SSL. Pay attention to modifying CSRF_TRUSTED_ORIGINS. If it is ssl, it starts with https, otherwise it is http.
 
-## 开发计划
+## Development Plan
 
-- [x] 分享设备给其他已注册用户（v1.3+）
+- [x] Share device with other registered users (v1.3+)
 
-  > 说明：类似网盘url分享，url激活后可以获得某个或某组或某个标签下的设备
-  > 备注：其实web api作为中间件，可做的不多，更多功能还是需要修改客户端来实现，就不太值当了。
+   > Description: Similar to network disk url sharing, after activating the url, you can get the devices under a certain group or label.
+   > Note: In fact, as a middleware, web api can't do much. More functions still need to be modified on the client side, which is not worth it.
 
-- [x] 集成Web客户端形式（v1.4+）
+- [x] Integrated web client form (v1.4+)
 
-  > 将大神的web客户端集成进来，已集成。 [来源](https://www.52pojie.cn/thread-1708319-1-1.html)
+   > Integrate the web client of Master, it has been integrated. [Source](https://www.52pojie.cn/thread-1708319-1-1.html)
   
-- [ ] 对过期（不在线）设备的过滤，用以区分在线&离线设备
+- [ ] Filtering of expired (offline) devices to distinguish between online & offline devices
 
-  > 通过配置方式，对过期超过指定时间的设备清理或过滤。
+   > Through configuration, clean or filter devices that have expired beyond the specified time.
 
-- [ ] 首屏拆分为用户列表页与管理员列表页并增加分页。
+- [ ] The first screen is split into a user list page and an administrator list page, and paging is added.
 
-- [ ] 支持信息导出到为xlsx文件。
+- [ ] Support exporting information to xlsx file.
 
 
-## 其他相关工具
+## Other related tools
 
-- [可以修改客户端ID的CMD脚本](https://github.com/abdullah-erturk/RustDesk-ID-Changer)
+- [CMD script that can modify client ID](https://github.com/abdullah-erturk/RustDesk-ID-Changer)
 
 - [rustdesk](https://github.com/rustdesk/rustdesk)
 
 - [rustdesk-server](https://github.com/rustdesk/rustdesk-server)
 
 ## Stargazers over time
-[![Stargazers over time](https://starchart.cc/kingmo888/rustdesk-api-server.svg?variant=adaptive)](https://starchart.cc/kingmo888/rustdesk-api-server)
+[![Stargazers over time](https://starchart.cc/Gigaion/rustdesk-api-server.svg?variant=adaptive)](https://starchart.cc/Gigaion/rustdesk-api-server)
