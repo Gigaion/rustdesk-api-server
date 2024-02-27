@@ -24,13 +24,13 @@ else:
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", 'j%7yjvygpih=6b%qf!q%&ixpn+27dngzdu-i3xh-^3xgy3^nnc')
-# ID服务器IP或域名，一般与中继服务器，用于web client
+# ID server IP or domain name, generally used with relay servers, used for web clients
 ID_SERVER = os.environ.get("ID_SERVER", '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False)
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ALLOWED_HOSTS = ["*"]
-AUTH_USER_MODEL = 'api.UserProfile'      #AppName.自定义user
+AUTH_USER_MODEL = 'api.UserProfile'      #AppName.自定义user (#AppName.Custom user)
 
 # Application definition
 
@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',   # 取消post的验证。
+    #'django.middleware.csrf.CsrfViewMiddleware',   # Cancel post verification
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -110,8 +110,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'zh-hans'
-TIME_ZONE = 'Asia/Shanghai'
+LANGUAGE_CODE = 'en-US'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
@@ -132,4 +132,4 @@ if DEBUG:
 else:
 
 
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')     # 新增
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')     # New
