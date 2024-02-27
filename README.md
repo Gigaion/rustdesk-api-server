@@ -121,7 +121,7 @@ services:
     restart: unless-stopped
 ```
 
-## 环境变量
+## Environment Variables
 
 | Variable name | Reference value | Remarks |
 | ---- | ------- | ----------- |
