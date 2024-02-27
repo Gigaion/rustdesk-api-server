@@ -54,7 +54,7 @@ Only supports Windows, please go to release to download. No installation environ
 
 ```bash
 # Clone the code locally
-git clone https://github.com/Gigaion/rustdesk-api-server.git
+git clone https://github.com/gigaion/rustdesk-api-server.git
 # Enter directory
 cd rustdesk-api-server
 # Install dependencies
@@ -76,7 +76,7 @@ from pysqlite3 import dbapi2 as Database # Enable pysqlite3
 
 #### Docker method 1: Build it yourself
 ```bash
-git clone https://github.com/Gigaion/rustdesk-api-server.git
+git clone https://github.com/gigaion/rustdesk-api-server.git
 cd rustdesk-api-server
 docker compose --compatibility up --build -d
 ```
@@ -90,14 +90,14 @@ docker run command：
 docker run -d \
   --name rustdesk-api-server \
   -p 21114:21114 \
-  -e CSRF_TRUSTED_ORIGINS=http://yourdomain.com:21114 \ #防跨域信任来源，可选
+  -e CSRF_TRUSTED_ORIGINS=http://yourdomain.com:21114 \ #Prevent cross-domain trust sources, optional
   -e ID_SERVER=yourdomain.com \ #ID server used by the web control
   -v /yourpath/db:/rustdesk-api-server/db \ #Modify /yourpath/db to be the mounting directory for your host database
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
   --network bridge \
   --restart unless-stopped \
-  ghcr.io/Gigaion/rustdesk-api-server:latest
+  ghcr.io/gigaion/rustdesk-api-server:gigaion_master
 ```
 
 docker-compose command:
@@ -107,7 +107,7 @@ version: "3.8"
 services:
   rustdesk-api-server:
     container_name: rustdesk-api-server
-    image: ghcr.io/Gigaion/rustdesk-api-server:latest
+    image: ghcr.io/gigaion/rustdesk-api-server:gigaion_master
     environment:
       - CSRF_TRUSTED_ORIGINS=http://yourdomain.com:21114 #Prevent cross-domain trust sources, optional
       - ID_SERVER=yourdomain.com #ID server used by the web control
@@ -189,4 +189,4 @@ services:
 - [rustdesk-server](https://github.com/rustdesk/rustdesk-server)
 
 ## Stargazers over time
-[![Stargazers over time](https://starchart.cc/Gigaion/rustdesk-api-server.svg?variant=adaptive)](https://starchart.cc/Gigaion/rustdesk-api-server)
+[![Stargazers over time](https://starchart.cc/gigaion/rustdesk-api-server.svg?variant=adaptive)](https://starchart.cc/gigaion/rustdesk-api-server)
